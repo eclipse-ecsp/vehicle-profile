@@ -20,6 +20,7 @@
 
 package org.eclipse.ecsp.vehicleprofile.vindecode;
 
+import org.eclipse.ecsp.dao.utils.EmbeddedMongoDB;
 import org.eclipse.ecsp.entities.vin.CodeValue;
 import org.eclipse.ecsp.testutils.EmbeddedRedisServer;
 import org.eclipse.ecsp.vehicleprofile.TheApplication;
@@ -36,7 +37,6 @@ import org.eclipse.ecsp.vehicleprofile.commons.service.vin.internal.InternalDeco
 import org.eclipse.ecsp.vehicleprofile.commons.utils.JsonUtils;
 import org.eclipse.ecsp.vehicleprofile.controller.VinDecodeController;
 import org.eclipse.ecsp.vehicleprofile.service.VinDecodeService;
-import org.eclipse.ecsp.vehicleprofile.test.utils.MongoServer;
 import org.junit.Assert;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -64,7 +64,7 @@ public class CodeValueVinDecoderTest {
     private static final String CODE_VALUE_VIN = "JN1TAAT32A0XXXXXX";
 
     @ClassRule
-    public static MongoServer MongoServer = new MongoServer();
+    public static final EmbeddedMongoDB MONGO_SERVER = new EmbeddedMongoDB();
 
     @ClassRule
     public static final EmbeddedRedisServer REDIS = new EmbeddedRedisServer();

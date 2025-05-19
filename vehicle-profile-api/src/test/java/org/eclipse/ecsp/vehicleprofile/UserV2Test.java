@@ -22,12 +22,13 @@ package org.eclipse.ecsp.vehicleprofile;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
+
+import org.eclipse.ecsp.dao.utils.EmbeddedMongoDB;
 import org.eclipse.ecsp.nosqldao.Order;
 import org.eclipse.ecsp.testutils.EmbeddedRedisServer;
 import org.eclipse.ecsp.vehicleprofile.controller.UserControllerV2;
 import org.eclipse.ecsp.vehicleprofile.domain.VehicleProfile;
 import org.eclipse.ecsp.vehicleprofile.service.VehicleManagerV2;
-import org.eclipse.ecsp.vehicleprofile.test.utils.MongoServer;
 import org.eclipse.ecsp.vehicleprofile.test.utils.VehicleProfileTestUtil;
 import org.junit.Assert;
 import org.junit.Before;
@@ -54,7 +55,7 @@ import java.io.IOException;
 public class UserV2Test {
 
     @ClassRule
-    public static MongoServer MongoServer = new MongoServer();
+    public static final EmbeddedMongoDB MONGO_SERVER = new EmbeddedMongoDB();
 
     @ClassRule
     public static final EmbeddedRedisServer REDIS = new EmbeddedRedisServer();

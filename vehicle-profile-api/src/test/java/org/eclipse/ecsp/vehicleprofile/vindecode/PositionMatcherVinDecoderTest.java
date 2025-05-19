@@ -20,6 +20,7 @@
 
 package org.eclipse.ecsp.vehicleprofile.vindecode;
 
+import org.eclipse.ecsp.dao.utils.EmbeddedMongoDB;
 import org.eclipse.ecsp.testutils.EmbeddedRedisServer;
 import org.eclipse.ecsp.vehicleprofile.TheApplication;
 import org.eclipse.ecsp.vehicleprofile.commons.dto.vin.PositionMatcherResult;
@@ -29,7 +30,6 @@ import org.eclipse.ecsp.vehicleprofile.commons.service.vin.internal.PositionMatc
 import org.eclipse.ecsp.vehicleprofile.commons.utils.JsonUtils;
 import org.eclipse.ecsp.vehicleprofile.controller.VinDecodeController;
 import org.eclipse.ecsp.vehicleprofile.service.VinDecodeService;
-import org.eclipse.ecsp.vehicleprofile.test.utils.MongoServer;
 import org.eclipse.ecsp.vehicleprofile.utils.ApiResponse;
 import org.junit.Assert;
 import org.junit.ClassRule;
@@ -56,7 +56,7 @@ public class PositionMatcherVinDecoderTest {
     private static final String SAMPLE_VIN_NUMBER = "56KTCDAA0K3378818";
     private static final String DEFAULT_VIN = "2cf3cf35-bff3-4d68-be9a-49a03bf3fbac";
     @ClassRule
-    public static MongoServer MongoServer = new MongoServer();
+    public static final EmbeddedMongoDB MONGO_SERVER = new EmbeddedMongoDB();
 
     @ClassRule
     public static final EmbeddedRedisServer REDIS = new EmbeddedRedisServer();

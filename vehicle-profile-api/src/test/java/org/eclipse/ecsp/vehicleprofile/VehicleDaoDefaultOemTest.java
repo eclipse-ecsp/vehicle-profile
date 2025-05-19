@@ -21,11 +21,12 @@
 package org.eclipse.ecsp.vehicleprofile;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import org.eclipse.ecsp.dao.utils.EmbeddedMongoDB;
 import org.eclipse.ecsp.testutils.EmbeddedRedisServer;
 import org.eclipse.ecsp.vehicleprofile.dao.VehicleDao;
 import org.eclipse.ecsp.vehicleprofile.domain.LotusVehicleProfile;
 import org.eclipse.ecsp.vehicleprofile.domain.VehicleProfile;
-import org.eclipse.ecsp.vehicleprofile.test.utils.MongoServer;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -46,7 +47,7 @@ import static org.junit.Assert.assertFalse;
 public class VehicleDaoDefaultOemTest {
 
     @ClassRule
-    public static MongoServer MongoServer = new MongoServer();
+    public static final EmbeddedMongoDB MONGO_SERVER = new EmbeddedMongoDB();
 
     @ClassRule
     public static final EmbeddedRedisServer REDIS = new EmbeddedRedisServer();

@@ -20,10 +20,10 @@
 
 package org.eclipse.ecsp.vehicleprofile;
 
+import org.eclipse.ecsp.dao.utils.EmbeddedMongoDB;
 import org.eclipse.ecsp.testutils.EmbeddedRedisServer;
 import org.eclipse.ecsp.vehicleprofile.config.VehicleProfileNotifierConfig;
 import org.eclipse.ecsp.vehicleprofile.notifier.KeysTree;
-import org.eclipse.ecsp.vehicleprofile.test.utils.MongoServer;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -48,7 +48,7 @@ import static org.junit.Assert.assertTrue;
 public class VehicleProfileNotifierConfigTest {
 
     @ClassRule
-    public static MongoServer MongoServer = new MongoServer();
+    public static final EmbeddedMongoDB MONGO_SERVER = new EmbeddedMongoDB();
 
     @ClassRule
     public static final EmbeddedRedisServer REDIS = new EmbeddedRedisServer();

@@ -22,13 +22,14 @@ package org.eclipse.ecsp.vehicleprofile;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import org.eclipse.ecsp.dao.utils.EmbeddedMongoDB;
 import org.eclipse.ecsp.domain.VehicleProfileNotificationEventDataV1_1;
 import org.eclipse.ecsp.testutils.EmbeddedRedisServer;
 import org.eclipse.ecsp.vehicleprofile.domain.Application;
 import org.eclipse.ecsp.vehicleprofile.domain.ModemInfo;
 import org.eclipse.ecsp.vehicleprofile.domain.VehicleProfile;
 import org.eclipse.ecsp.vehicleprofile.notifier.VehicleProfileChangedNotifier;
-import org.eclipse.ecsp.vehicleprofile.test.utils.MongoServer;
 import org.eclipse.ecsp.vehicleprofile.test.utils.VehicleProfileTestUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.junit.ClassRule;
@@ -68,7 +69,7 @@ public class VehicleProfileChangedNotifierTest {
     @Autowired
     private VehicleProfileChangedNotifier notifier;
     @ClassRule
-    public static MongoServer MongoServer = new MongoServer();
+    public static final EmbeddedMongoDB MONGO_SERVER = new EmbeddedMongoDB();
 
     @ClassRule
     public static final EmbeddedRedisServer REDIS = new EmbeddedRedisServer();

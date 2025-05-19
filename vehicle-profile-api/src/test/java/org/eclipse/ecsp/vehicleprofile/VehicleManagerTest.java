@@ -22,6 +22,8 @@ package org.eclipse.ecsp.vehicleprofile;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
+
+import org.eclipse.ecsp.dao.utils.EmbeddedMongoDB;
 import org.eclipse.ecsp.entities.vin.CodeValue;
 import org.eclipse.ecsp.testutils.EmbeddedRedisServer;
 import org.eclipse.ecsp.vehicleprofile.commons.dao.CodeValueDao;
@@ -43,7 +45,6 @@ import org.eclipse.ecsp.vehicleprofile.exception.BadRequestException;
 import org.eclipse.ecsp.vehicleprofile.exception.NotFoundException;
 import org.eclipse.ecsp.vehicleprofile.service.VehicleAssociationService;
 import org.eclipse.ecsp.vehicleprofile.service.VehicleManager;
-import org.eclipse.ecsp.vehicleprofile.test.utils.MongoServer;
 import org.eclipse.ecsp.vehicleprofile.test.utils.VehicleProfileTestUtil;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
@@ -91,7 +92,7 @@ import static org.junit.Assume.assumeFalse;
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 public class VehicleManagerTest {
     @ClassRule
-    public static MongoServer MongoServer = new MongoServer();
+    public static final EmbeddedMongoDB MONGO_SERVER = new EmbeddedMongoDB();
 
     @ClassRule
     public static final EmbeddedRedisServer REDIS = new EmbeddedRedisServer();
