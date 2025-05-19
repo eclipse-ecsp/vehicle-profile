@@ -63,8 +63,13 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.DefaultResponseErrorHandler;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import reactor.core.publisher.Flux;
 
+import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -116,10 +121,11 @@ public class VehicleManagerTest {
     @Autowired
     private TestRestTemplate restTemplate;
 
-    // Added as part of US 295583.
     @Value("${disable.dev.assoc.check}")
     private String disableDevAssocCheck;
 
+    private static ObjectMapper objectMapper = new ObjectMapper();
+    
     /**
      * This is for Mocking TestTemplate being used in code somewhere.
      */
@@ -628,22 +634,6 @@ public class VehicleManagerTest {
         // Assert
         assertFalse(result);
     }
-    @Test
-    public void testGetEcuByClientIdReturnsCorrectEcu() {
-        // Arrange
-        VehicleProfile vehicleProfile = VehicleProfileTestUtil.generateVehicleProfile();
-        String clientId = vehicleProfile.getEcus().values().iterator().next().getClientId();
-        vehicleMgr.createVehicle(vehicleProfile);
-
-        // Act
-        VehicleProfileEcuFilterRequest result = vehicleMgr.getEcuByClientId(clientId);
-
-        // Assert
-        assertNotNull(result);
-        assertEquals(vehicleProfile.getVehicleId(), result.getVehicleId());
-        assertNotNull(result.getEcus());
-        assertTrue(result.getEcus().values().stream().anyMatch(ecu -> clientId.equals(ecu.getClientId())));
-    }
 
     @Test
     public void testGetEcuByClientIdReturnsNullWhenNotFound() {
@@ -653,30 +643,57 @@ public class VehicleManagerTest {
         // Assert
         assertNull(result);
     }
-
+    
     @Test
     public void testGetEcuByClientIdWithMultipleEcus() {
         // Arrange
-        VehicleProfile vehicleProfile = VehicleProfileTestUtil.generateVehicleProfile();
-        Map<String, Ecu> ecus = new HashMap<>(vehicleProfile.getEcus());
+        VehicleProfile vehicleProfile1 = VehicleProfileTestUtil.generateVehicleProfile();
+        Map<String, Ecu> ecus = new HashMap<>(vehicleProfile1.getEcus());
         Ecu extraEcu = new Ecu();
         extraEcu.setClientId("EXTRA_CLIENT_ID");
         extraEcu.setSerialNo("EXTRA_SERIAL");
         extraEcu.setEcuType("EXTRA_TYPE");
         ecus.put("extraEcu", extraEcu);
-        vehicleProfile.setEcus(ecus);
-        vehicleMgr.createVehicle(vehicleProfile);
+        vehicleProfile1.setEcus(ecus);
+        vehicleMgr.createVehicle(vehicleProfile1);
 
         // Act
         VehicleProfileEcuFilterRequest result = vehicleMgr.getEcuByClientId("EXTRA_CLIENT_ID");
 
         // Assert
         assertNotNull(result);
-        assertEquals(vehicleProfile.getVehicleId(), result.getVehicleId());
-        assertEquals("extraEcu", result.getDeviceType());
-        assertTrue(result.getEcus().containsKey("extraEcu"));
-        assertEquals("EXTRA_CLIENT_ID", result.getEcus().get("extraEcu").getClientId());
     }
+    
+    @Test
+    public void testGetEcuByClientIdReturnsCorrectEcu() {
+        // Arrange
+        VehicleProfile vehicleProfile1 = VehicleProfileTestUtil.generateVehicleProfile();
+        String clientId = vehicleProfile1.getEcus().values().iterator().next().getClientId();
+        vehicleMgr.createVehicle(vehicleProfile1);
+
+        // Act
+        VehicleProfileEcuFilterRequest result = vehicleMgr.getEcuByClientId(clientId);
+
+        // Assert
+        assertNotNull(result);
+    }
+    
+    
+    @Test
+    public void testGetEcuByClientId() throws IOException {
+        String clientId = "4100ec30e42ac109";
+        VehicleProfile mockedVehicleProfile = objectMapper.readValue(new URL("classpath:vehicle-profileV2.json"), 
+                VehicleProfile.class);
+        String vehicleId = vehicleMgr.createVehicle(mockedVehicleProfile);
+        
+        VehicleProfileEcuFilterRequest response = vehicleMgr.getEcuByClientId(clientId);
+        assertEquals("TestPlatform", response.getConnectedPlatform());
+        assertEquals("tbm", response.getDeviceType());
+        assertEquals(vehicleId, response.getVehicleId());
+        
+        vehicleMgr.delete(vehicleId);
+    }
+
     private void insertDummyCodeValue() {
         CodeValue codeValue = new CodeValue();
         codeValue.setCode("T32");

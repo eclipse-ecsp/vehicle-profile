@@ -1,15 +1,15 @@
 {
 	"schemaVersion": "1.0",
-	"vin": "BHU25CBWOSX4087",
+	"vin": "BHU25CBWOSX4088",
 	"createdOn": "2018-08-08T15:48:37.883+0000",
 	"updatedOn": "2018-08-08T15:48:37.883+0000",
 	"productionDate": "2018-05-17T15:49:33.000+0000",
 	"soldRegion": "NorthAmerica",
 	"saleDate": "2018-07-17T20:17:13.711+0000",
-    "connectedPlatform": "Platform",
+    "connectedPlatform": "TestPlatform",
 	"vehicleAttributes": {
-		"make": "BrandName",
-		"model": "ModelName",
+		"make": "Test",
+		"model": "Test",
 		"marketingColor": "DIAMOND BLACK CRYSTAL",
 		"baseColor": null,
 		"modelYear": "2019",
@@ -19,7 +19,7 @@
 	},
 	"authorizedUsers": [
 		{
-			"userId": "abcxyz",
+			"userId": "test",
 			"role": "VEHICLE_OWNER",
 			"createdOn": "2018-07-17T20:48:52.757+0000"
 		}
@@ -27,10 +27,10 @@
 	"modemInfo": {
 		"iccid": "8991101200003204510",
 		"imei": "35453",
-		"msisdn": "12484798091",
+		"msisdn": "12484798092",
 		"imsi": "31015"
 	},
-	"vehicleArchType": "hu,dongle",
+	"vehicleArchType": "hu,tbm",
 	"ecus": {
 		"hu": {
 			"swVersion": "4.31",
@@ -41,7 +41,7 @@
 			"manufacturer": "Harman",
 			"ecuType": "VP4",
 			"serialNo": "ADXE12435",
-			"clientId": "4100ec30e42ac107",
+			"clientId": "4100ec30e42ac108",
 			"capabilities": {
 				"services": [
 					{
@@ -95,7 +95,7 @@
 				]
 			}
 		},
-		"telematics": {
+		"tbm": {
 			"swVersion": "4.31",
 			"hwVersion": "1.50",
 			"partNumber": "4789635855",
@@ -104,7 +104,7 @@
 			"manufacturer": "Test",
 			"ecuType": "VP4",
 			"serialNo": "ADXE12435",
-			"clientId": "4100ec30e42ac107",
+			"clientId": "4100ec30e42ac109",
 			"capabilities": {
 				"services": [
 					{
