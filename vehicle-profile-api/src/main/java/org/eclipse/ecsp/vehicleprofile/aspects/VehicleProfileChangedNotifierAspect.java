@@ -20,7 +20,6 @@
 
 package org.eclipse.ecsp.vehicleprofile.aspects;
 
-import org.eclipse.ecsp.nosqldao.Updates;
 import org.eclipse.ecsp.utils.logger.IgniteLogger;
 import org.eclipse.ecsp.utils.logger.IgniteLoggerFactory;
 import org.eclipse.ecsp.vehicleprofile.constants.Constants;
@@ -102,8 +101,8 @@ public class VehicleProfileChangedNotifierAspect {
 
 
     @Around(value = "org.eclipse.ecsp.aspects.vehicleprofile.ecsp.VehicleProfileChangedNotifierAspect"
-            + ".updatedPc() && args(id, updates)")
-    public boolean notifyVehicleUpdate(ProceedingJoinPoint proceedingJoinPoint, String id, Updates updates)
+            + ".updatedPc() && args(id, ..)")
+    public boolean notifyVehicleUpdate(ProceedingJoinPoint proceedingJoinPoint, String id)
             throws Throwable {
         return notifyVehicleUpdateOldAndNewDataUnknown(proceedingJoinPoint, id);
     }
