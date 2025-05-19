@@ -20,9 +20,6 @@
 
 package org.eclipse.ecsp.vehicleprofile;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-
 import org.eclipse.ecsp.dao.utils.EmbeddedMongoDB;
 import org.eclipse.ecsp.entities.vin.CodeValue;
 import org.eclipse.ecsp.testutils.EmbeddedRedisServer;
@@ -43,6 +40,7 @@ import org.eclipse.ecsp.vehicleprofile.domain.VehicleProfile;
 import org.eclipse.ecsp.vehicleprofile.domain.VehicleProfileFilterRequest;
 import org.eclipse.ecsp.vehicleprofile.exception.BadRequestException;
 import org.eclipse.ecsp.vehicleprofile.exception.NotFoundException;
+import org.eclipse.ecsp.vehicleprofile.rest.mapping.EcuClient;
 import org.eclipse.ecsp.vehicleprofile.service.VehicleAssociationService;
 import org.eclipse.ecsp.vehicleprofile.service.VehicleManager;
 import org.eclipse.ecsp.vehicleprofile.test.utils.VehicleProfileTestUtil;
@@ -146,21 +144,21 @@ public class VehicleManagerTest {
     }
 
     @Test(expected = BadRequestException.class)
-    public void testCreateVehicleEmptyVin() throws JsonParseException, JsonMappingException, IOException {
+    public void testCreateVehicleEmptyVin() {
         VehicleProfile vehicleProfile = VehicleProfileTestUtil.generateVehicleProfile();
         vehicleProfile.setVin(null);
         vehicleMgr.createVehicle(vehicleProfile);
     }
 
     @Test(expected = BadRequestException.class)
-    public void testCreateVehicleExistingVin() throws JsonParseException, JsonMappingException, IOException {
+    public void testCreateVehicleExistingVin() {
         VehicleProfile vehicleProfile = VehicleProfileTestUtil.generateVehicleProfile();
         vehicleMgr.createVehicle(vehicleProfile);
         vehicleMgr.createVehicle(vehicleProfile);
     }
 
     @Test(expected = BadRequestException.class)
-    public void testCreateVehicleInvalidEcus() throws JsonParseException, JsonMappingException, IOException {
+    public void testCreateVehicleInvalidEcus() {
         VehicleProfile vehicleProfile = VehicleProfileTestUtil.generateVehicleProfile();
         Ecu ecu = new Ecu();
         ecu.setClientId("testDeviceId");
@@ -228,7 +226,7 @@ public class VehicleManagerTest {
     }
 
     @Test(expected = NotFoundException.class)
-    public void testPutVehicleEmptyProfile() throws JsonParseException, JsonMappingException, IOException {
+    public void testPutVehicleEmptyProfile() {
         VehicleProfile vehicleProfile = vehicleMgr.findVehicleById(validVehicleId);
         vehicleProfile.setVehicleId("invalidVehicleId");
         vehicleProfile.setSoldRegion("USA");
@@ -236,7 +234,7 @@ public class VehicleManagerTest {
     }
 
     @Test(expected = BadRequestException.class)
-    public void testPutVehicleNonExistingVin() throws JsonParseException, JsonMappingException, IOException {
+    public void testPutVehicleNonExistingVin() {
         VehicleProfile vehicleProfile = vehicleMgr.findVehicleById(validVehicleId);
         vehicleProfile.setVehicleId(validVehicleId);
         vehicleProfile.setVin("testVin");
@@ -245,7 +243,7 @@ public class VehicleManagerTest {
     }
 
     @Test(expected = BadRequestException.class)
-    public void testPutVehicleInvalidEcus() throws JsonParseException, JsonMappingException, IOException {
+    public void testPutVehicleInvalidEcus() {
         VehicleProfile vehicleProfile = vehicleMgr.findVehicleById(validVehicleId);
         vehicleProfile.setVehicleId(validVehicleId);
         vehicleProfile.setSoldRegion("USA");
@@ -260,7 +258,8 @@ public class VehicleManagerTest {
 
     @Test
     public void testFindVehicleById() {
-        vehicleMgr.findVehicleById(validVehicleId);
+        VehicleProfile profile = vehicleMgr.findVehicleById(validVehicleId);
+        assertNotNull(profile);
     }
 
     @Test(expected = NotFoundException.class)
@@ -273,12 +272,14 @@ public class VehicleManagerTest {
         Map<String, String> searchParams = new HashMap<>();
         searchParams.put("vin", "4100ec30e42ac107");
         searchParams.put(Constants.LOGICAL_OPERATOR_KEY, Constants.OR_OPERATOR);
-        vehicleMgr.search(searchParams);
+        List<VehicleProfile> profileList = vehicleMgr.search(searchParams);
+        assertEquals(0, profileList.size());
     }
 
     @Test
     public void testGetById() {
-        vehicleMgr.get(validVehicleId, "InvalidPath");
+        Object object = vehicleMgr.get(validVehicleId, "InvalidPath");
+        assertNotNull(object);
     }
 
     @Test(expected = NotFoundException.class)
@@ -291,7 +292,8 @@ public class VehicleManagerTest {
         Map<String, String> searchParams = new HashMap<>();
         searchParams.put("msisdn", "12484798091");
         searchParams.put(Constants.LOGICAL_OPERATOR_KEY, Constants.OR_OPERATOR);
-        vehicleMgr.search(searchParams);
+        List<VehicleProfile> profileList = vehicleMgr.search(searchParams);
+        assertTrue(profileList.size() > 0);
     }
 
     @Test
@@ -316,7 +318,8 @@ public class VehicleManagerTest {
         vehicleAssociationService.setAssociationBaseUrl("http://localhost:" + server.getPort());
 
         insertDummyCodeValue();
-        vehicleMgr.replaceVin("4100ec30e42ac107", "JN1TAAT32A0XXXXXX");
+        String responseMessage = vehicleMgr.replaceVin("4100ec30e42ac107", "JN1TAAT32A0XXXXXX");
+        assertEquals(Constants.API_SUCCESS, responseMessage);
     }
 
     @Test(expected = Exception.class)
@@ -337,7 +340,8 @@ public class VehicleManagerTest {
     public void testUpdateAssociate() {
         User user = generateUser();
         vehicleMgr.associate(validVehicleId, user);
-        vehicleMgr.updateAssociation(validVehicleId, user);
+        boolean result = vehicleMgr.updateAssociation(validVehicleId, user);
+        assertTrue(result);
     }
 
     @Test(expected = NotFoundException.class)
@@ -347,7 +351,8 @@ public class VehicleManagerTest {
 
     @Test
     public void testSearchClientIds() {
-        vehicleMgr.searchClientIds(validVehicleId, "LOCATION");
+        List<EcuClient> ecuList = vehicleMgr.searchClientIds(validVehicleId, "LOCATION");
+        assertEquals(2, ecuList.size());
     }
 
     @Test(expected = BadRequestException.class)
@@ -375,7 +380,8 @@ public class VehicleManagerTest {
     public void testDisassociate() {
         User user = generateUser();
         vehicleMgr.associate(validVehicleId, user);
-        vehicleMgr.disassociate(validVehicleId, user.getUserId(), "reason", null);
+        boolean result = vehicleMgr.disassociate(validVehicleId, user.getUserId(), "reason", null);
+        assertTrue(result);
     }
 
     @Test(expected = NotFoundException.class)

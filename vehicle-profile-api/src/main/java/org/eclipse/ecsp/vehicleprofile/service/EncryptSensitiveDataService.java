@@ -83,7 +83,7 @@ public class EncryptSensitiveDataService {
             InvalidKeyException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException {
         SecretKey key = generateKey(GENERATE_KEY_LENGTH);
         IvParameterSpec ivParameterSpec = generateIv();
-        Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+        Cipher cipher = Cipher.getInstance("AES/CBC/NoPadding");
         cipher.init(Cipher.ENCRYPT_MODE, key, ivParameterSpec);
         byte[] cipherText = cipher.doFinal(log.getBytes());
         return Base64.getEncoder().encodeToString(cipherText);
