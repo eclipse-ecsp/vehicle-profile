@@ -674,7 +674,88 @@ public class VehicleManagerTest {
         
         vehicleMgr.delete(vehicleId);
     }
+    @Test
+    public void testGetAssociatedVehiclesReturnsEmptyListWhenNoAssociations() {
+        // Arrange
+        VehicleProfile vehicleProfile1 = VehicleProfileTestUtil.generateVehicleProfile();
+        String vehicleId = vehicleMgr.createVehicle(vehicleProfile1);
 
+        // Act
+        List<org.eclipse.ecsp.vehicleprofile.rest.mapping.AssociatedVehicle> associatedVehicles =
+                vehicleMgr.getAssociatedVehicles("non_existing_user");
+
+        // Assert
+        assertNotNull(associatedVehicles);
+        assertTrue(associatedVehicles.isEmpty());
+
+        vehicleMgr.delete(vehicleId);
+    }
+
+    @Test
+    public void testGetAssociatedVehiclesReturnsAssociatedVehicle() {
+        // Arrange
+        VehicleProfile vehicleProfile1 = VehicleProfileTestUtil.generateVehicleProfile();
+        String vehicleId = vehicleMgr.createVehicle(vehicleProfile1);
+        User user = generateUser();
+        vehicleMgr.associate(vehicleId, user);
+
+        // Act
+        List<org.eclipse.ecsp.vehicleprofile.rest.mapping.AssociatedVehicle> associatedVehicles =
+                vehicleMgr.getAssociatedVehicles(user.getUserId());
+
+        // Assert
+        assertNotNull(associatedVehicles);
+        assertFalse(associatedVehicles.isEmpty());
+        boolean found = false;
+        for (org.eclipse.ecsp.vehicleprofile.rest.mapping.AssociatedVehicle av : associatedVehicles) {
+            if (vehicleId.equals(av.getVehicleId()) && user.getRole().equals(av.getRole())) {
+                found = true;
+                break;
+            }
+        }
+        assertTrue(found);
+
+        vehicleMgr.delete(vehicleId);
+    }
+
+    @Test
+    public void testGetAssociatedVehiclesWithMultipleAssociations() {
+        // Arrange
+        VehicleProfile vehicleProfile1 = VehicleProfileTestUtil.generateVehicleProfile();
+        String vehicleId1 = vehicleMgr.createVehicle(vehicleProfile1);
+        User user1 = generateUser();
+        vehicleMgr.associate(vehicleId1, user1);
+
+        VehicleProfile vehicleProfile2 = VehicleProfileTestUtil.generateVehicleProfile();
+        String vehicleId2 = vehicleMgr.createVehicle(vehicleProfile2);
+        User user2 = new User();
+        user2.setUserId(user1.getUserId());
+        user2.setRole("SECONDARY_OWNER");
+        user2.setStatus("ASSOCIATED");
+        vehicleMgr.associate(vehicleId2, user2);
+
+        // Act
+        List<org.eclipse.ecsp.vehicleprofile.rest.mapping.AssociatedVehicle> associatedVehicles =
+                vehicleMgr.getAssociatedVehicles(user1.getUserId());
+
+        // Assert
+        assertNotNull(associatedVehicles);
+        assertTrue(associatedVehicles.size() >= 2);
+
+        boolean found1 = false, found2 = false;
+        for (org.eclipse.ecsp.vehicleprofile.rest.mapping.AssociatedVehicle av : associatedVehicles) {
+            if (vehicleId1.equals(av.getVehicleId()) && user1.getRole().equals(av.getRole())) {
+                found1 = true;
+            }
+            if (vehicleId2.equals(av.getVehicleId()) && user2.getRole().equals(av.getRole())) {
+                found2 = true;
+            }
+        }
+        assertTrue(found1 && found2);
+
+        vehicleMgr.delete(vehicleId1);
+        vehicleMgr.delete(vehicleId2);
+    }
     private void insertDummyCodeValue() {
         CodeValue codeValue = new CodeValue();
         codeValue.setCode("T32");
