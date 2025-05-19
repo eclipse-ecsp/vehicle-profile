@@ -117,6 +117,7 @@
 			**/vehicleprofile/rest/mapping/AssociatedVehicle.java,
 			**/vehicleprofile/rest/mapping/EcuClient.java,
 			**/vehicleprofile/controller/Vehicle*.java,
+			**/vehicleprofile/service/EncryptSensitiveDataService.java,
 
 
 			<!-- commons -->

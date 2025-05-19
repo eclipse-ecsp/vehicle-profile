@@ -64,7 +64,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.DefaultResponseErrorHandler;
 import reactor.core.publisher.Flux;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -76,6 +75,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeFalse;
@@ -471,7 +471,69 @@ public class VehicleManagerTest {
         inventory.setVin("InvalidVin");
         vehicleMgr.updateInventory(validVehicleId, inventory);
     }
+    @Test
+    public void testTerminateDeviceDeletesVehicleProfileAndVinDetails() {
+        // Arrange
+        VehicleProfile vehicleProfile = VehicleProfileTestUtil.generateVehicleProfile();
+        String deviceId = vehicleProfile.getEcus().values().iterator().next().getClientId();
+        vehicleMgr.createVehicle(vehicleProfile);
 
+        // Act
+        boolean result = vehicleMgr.terminateDevice(deviceId);
+
+        // Assert
+        assertTrue(result);
+        // The profile should be deleted, so searching by clientId should return empty
+        Map<String, String> params = new HashMap<>();
+        params.put("clientId", deviceId);
+        List<VehicleProfile> profiles = vehicleMgr.search(params);
+        assertTrue(profiles == null || profiles.isEmpty());
+    }
+
+    @Test
+    public void testTerminateDeviceWhenDeviceNotFound() {
+        // Arrange
+        String invalidDeviceId = "NON_EXISTENT_DEVICE_ID";
+
+        // Act
+        boolean result = vehicleMgr.terminateDevice(invalidDeviceId);
+
+        // Assert
+        assertFalse(result);
+    }
+
+    @Test
+    public void testTerminateDeviceDeletesVinAndHcpVinDetails() {
+        // Arrange
+        VehicleProfile vehicleProfile = VehicleProfileTestUtil.generateVehicleProfile();
+        String deviceId = vehicleProfile.getEcus().values().iterator().next().getClientId();
+        vehicleMgr.createVehicle(vehicleProfile);
+
+        // Insert a profile with VIN and HCP keys for deletion
+        VehicleProfile vinProfile = VehicleProfileTestUtil.generateVehicleProfile();
+        vinProfile.setVin("VIN" + deviceId);
+        vehicleMgr.createVehicle(vinProfile);
+
+        VehicleProfile hcpProfile = VehicleProfileTestUtil.generateVehicleProfile();
+        hcpProfile.setVin("HCP" + deviceId);
+        vehicleMgr.createVehicle(hcpProfile);
+
+        // Act
+        boolean result = vehicleMgr.terminateDevice(deviceId);
+
+        // Assert
+        assertTrue(result);
+        // Both VIN and HCP profiles should be deleted
+        Map<String, String> vinParams = new HashMap<>();
+        vinParams.put("vin", "VIN" + deviceId);
+        List<VehicleProfile> vinProfiles = vehicleMgr.search(vinParams);
+        assertTrue(vinProfiles == null || vinProfiles.isEmpty());
+
+        Map<String, String> hcpParams = new HashMap<>();
+        hcpParams.put("vin", "HCP" + deviceId);
+        List<VehicleProfile> hcpProfiles = vehicleMgr.search(hcpParams);
+        assertTrue(hcpProfiles == null || hcpProfiles.isEmpty());
+    }
     private Inventory generateInventory() {
         Map<String, InventoryScomo> scomoMapValue = new LinkedHashMap<>();
         InventoryScomo inventoryScomo = new InventoryScomo();
@@ -524,6 +586,65 @@ public class VehicleManagerTest {
         tcs.put("activation", tcUs);
         user.setTc(tcs);
         return user;
+    }
+    
+    @Test
+    public void testDeleteVinDetailsbyVinIdDeletesProfileWhenExists() {
+        // Arrange
+        VehicleProfile vehicleProfile = VehicleProfileTestUtil.generateVehicleProfile();
+        String deviceId = vehicleProfile.getEcus().values().iterator().next().getClientId();
+        String vinKey = "VIN";
+        String vinId = vinKey + deviceId;
+        vehicleProfile.setVin(vinId);
+        vehicleMgr.createVehicle(vehicleProfile);
+
+        // Act
+        boolean result = vehicleMgr.deleteVinDetailsbyVinId(vinKey, deviceId);
+
+        // Assert
+        assertTrue(result);
+        Map<String, String> params = new HashMap<>();
+        params.put("vin", vinId);
+        List<VehicleProfile> profiles = vehicleMgr.search(params);
+        assertTrue(profiles == null || profiles.isEmpty());
+    }
+
+    @Test
+    public void testDeleteVinDetailsbyVinIdReturnsFalseWhenProfileDoesNotExist() {
+        // Arrange
+        String vinKey = "VIN";
+        String deviceId = "NON_EXISTENT_DEVICE_ID";
+
+        // Act
+        boolean result = vehicleMgr.deleteVinDetailsbyVinId(vinKey, deviceId);
+
+        // Assert
+        assertFalse(result);
+    }
+
+    @Test
+    public void testDeleteVinDetailsbyVinIdReturnsFalseWhenDeleteFails() {
+        // Arrange
+        VehicleProfile vehicleProfile = VehicleProfileTestUtil.generateVehicleProfile();
+        String deviceId = vehicleProfile.getEcus().values().iterator().next().getClientId();
+        String vinKey = "VIN";
+        String vinId = vinKey + deviceId;
+        vehicleProfile.setVin(vinId);
+        vehicleMgr.createVehicle(vehicleProfile);
+
+        // Simulate failure by deleting the profile first
+        Map<String, String> params = new HashMap<>();
+        params.put("vin", vinId);
+        List<VehicleProfile> profiles = vehicleMgr.search(params);
+        if (profiles != null && !profiles.isEmpty()) {
+            vehicleMgr.deleteVehicleProfile(profiles.get(0));
+        }
+
+        // Act
+        boolean result = vehicleMgr.deleteVinDetailsbyVinId(vinKey, deviceId);
+
+        // Assert
+        assertFalse(result);
     }
 
     private void insertDummyCodeValue() {

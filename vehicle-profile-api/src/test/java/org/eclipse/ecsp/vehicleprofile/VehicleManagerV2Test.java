@@ -20,9 +20,6 @@
 
 package org.eclipse.ecsp.vehicleprofile;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-
 import org.eclipse.ecsp.dao.utils.EmbeddedMongoDB;
 import org.eclipse.ecsp.testutils.EmbeddedRedisServer;
 import org.eclipse.ecsp.vehicleprofile.dao.VehicleDao;
@@ -54,13 +51,13 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.DefaultResponseErrorHandler;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeFalse;
 
@@ -117,35 +114,35 @@ public class VehicleManagerV2Test {
      * setUp.
      */
     @Before
-    public void setUp() throws JsonParseException, JsonMappingException, IOException {
+    public void setUp() {
         VehicleProfile vehicleProfile = VehicleProfileTestUtil.generateVehicleProfile();
         this.validVehicleId = vehicleMgrV2.createVehicle(vehicleProfile);
         restTemplate.getRestTemplate().setErrorHandler(new DefaultResponseErrorHandler());
     }
 
     @Test
-    public void testCreateVehicle() throws JsonParseException, JsonMappingException, IOException {
+    public void testCreateVehicle() {
         VehicleProfile vehicleProfile = VehicleProfileTestUtil.generateVehicleProfile();
         String id = vehicleMgrV2.createVehicle(vehicleProfile);
         assertEquals(vehicleProfile.getVin(), id);
     }
 
     @Test(expected = ApiValidationFailedException.class)
-    public void testCreateVehicleEmptyVin() throws JsonParseException, JsonMappingException, IOException {
+    public void testCreateVehicleEmptyVin() {
         VehicleProfile vehicleProfile = VehicleProfileTestUtil.generateVehicleProfile();
         vehicleProfile.setVin(null);
         vehicleMgrV2.createVehicle(vehicleProfile);
     }
 
     @Test(expected = ApiValidationFailedException.class)
-    public void testCreateVehicleExistingVin() throws JsonParseException, JsonMappingException, IOException {
+    public void testCreateVehicleExistingVin() {
         VehicleProfile vehicleProfile = VehicleProfileTestUtil.generateVehicleProfile();
         vehicleMgrV2.createVehicle(vehicleProfile);
         vehicleMgrV2.createVehicle(vehicleProfile);
     }
 
     @Test(expected = ApiValidationFailedException.class)
-    public void testCreateVehicleInvalidEcus() throws JsonParseException, JsonMappingException, IOException {
+    public void testCreateVehicleInvalidEcus() {
         VehicleProfile vehicleProfile = VehicleProfileTestUtil.generateVehicleProfile();
         Ecu ecu = new Ecu();
         ecu.setClientId("testDeviceId");
@@ -157,7 +154,7 @@ public class VehicleManagerV2Test {
     }
 
     @Test
-    public void testUpdateVehicle() throws JsonParseException, JsonMappingException, IOException {
+    public void testUpdateVehicle() {
         VehicleProfile vehicleProfile = VehicleProfileTestUtil.generateVehicleProfile();
         vehicleProfile.setVehicleId(validVehicleId);
         vehicleProfile.setSoldRegion("USA");
@@ -172,14 +169,14 @@ public class VehicleManagerV2Test {
     }
 
     @Test(expected = ApiResourceNotFoundException.class)
-    public void testUpdateVehicleEmptyProfile() throws JsonParseException, JsonMappingException, IOException {
+    public void testUpdateVehicleEmptyProfile() {
         VehicleProfile vehicleProfile = VehicleProfileTestUtil.generateVehicleProfile();
         vehicleProfile.setVehicleId("testVehicleId");
         vehicleProfile.setSoldRegion("USA");
 
         server.enqueue(new MockResponse().setBody("{\"userId\": \"apitest43\"}").setResponseCode(SUCCESS_CODE));
         vehicleAssociationService.setAssociationBaseUrl("http://localhost:" + server.getPort());
-        boolean id = vehicleMgrV2.update(vehicleProfile, "apitest43");
+        vehicleMgrV2.update(vehicleProfile, "apitest43");
     }
 
     @Test
@@ -205,7 +202,7 @@ public class VehicleManagerV2Test {
     }
 
     @Test(expected = ApiValidationFailedException.class)
-    public void testUpdateVehicleInvalidEcus() throws JsonParseException, JsonMappingException, IOException {
+    public void testUpdateVehicleInvalidEcus() {
         VehicleProfile vehicleProfile = VehicleProfileTestUtil.generateVehicleProfile();
         vehicleProfile.setVehicleId(validVehicleId);
         vehicleProfile.setVin("testVin");
@@ -222,7 +219,7 @@ public class VehicleManagerV2Test {
     }
 
     @Test(expected = Exception.class)
-    public void testUpdateVehicleException() throws JsonParseException, JsonMappingException, IOException {
+    public void testUpdateVehicleException() {
         // Updated as part of US 295583.
         assumeFalse(Boolean.valueOf(disableDevAssocCheck));
         VehicleProfile vehicleProfile = VehicleProfileTestUtil.generateVehicleProfile();
@@ -235,7 +232,7 @@ public class VehicleManagerV2Test {
     }
 
     @Test
-    public void testPutVehicle() throws JsonParseException, JsonMappingException, IOException {
+    public void testPutVehicle() {
         VehicleProfile vehicleProfile = vehicleMgr.findVehicleById(validVehicleId);
         vehicleProfile.setVehicleId(validVehicleId);
         vehicleProfile.setSoldRegion("USA");
@@ -244,7 +241,7 @@ public class VehicleManagerV2Test {
     }
 
     @Test(expected = ApiResourceNotFoundException.class)
-    public void testPutVehicleEmptyProfile() throws JsonParseException, JsonMappingException, IOException {
+    public void testPutVehicleEmptyProfile() {
         VehicleProfile vehicleProfile = vehicleMgr.findVehicleById(validVehicleId);
         vehicleProfile.setVehicleId("invalidVehicleId");
         vehicleProfile.setSoldRegion("USA");
@@ -252,7 +249,7 @@ public class VehicleManagerV2Test {
     }
 
     @Test(expected = ApiValidationFailedException.class)
-    public void testPutVehicleNonExistingVin() throws JsonParseException, JsonMappingException, IOException {
+    public void testPutVehicleNonExistingVin() {
         VehicleProfile vehicleProfile = vehicleMgr.findVehicleById(validVehicleId);
         vehicleProfile.setVehicleId(validVehicleId);
         vehicleProfile.setVin("testVin");
@@ -261,7 +258,7 @@ public class VehicleManagerV2Test {
     }
 
     @Test(expected = ApiValidationFailedException.class)
-    public void testPutVehicleInvalidEcus() throws JsonParseException, JsonMappingException, IOException {
+    public void testPutVehicleInvalidEcus() {
         VehicleProfile vehicleProfile = vehicleMgr.findVehicleById(validVehicleId);
         vehicleProfile.setVehicleId(validVehicleId);
         vehicleProfile.setSoldRegion("USA");
@@ -276,7 +273,8 @@ public class VehicleManagerV2Test {
 
     @Test
     public void testGetById() {
-        vehicleMgrV2.get(validVehicleId, "InvalidPath");
+        Object object = vehicleMgrV2.get(validVehicleId,"InvalidPath");
+        assertNotNull(object);
     }
 
     @Test(expected = ApiResourceNotFoundException.class)

@@ -522,37 +522,50 @@ public class VehicleManager {
     }
 
     private boolean deleteDevice(String deviceId) {
-        VehicleProfile vehicleProfile = null;
         Map<String, String> params = new HashMap<>();
         params.put(Constants.DB_FIELD_NAME_CLIENTID, deviceId);
         List<VehicleProfile> vehicleProfileList = search(params);
 
-        if (vehicleProfileList != null && !vehicleProfileList.isEmpty() && vehicleProfileList.get(0) != null) {
-            vehicleProfile = vehicleProfileList.get(0);
-            LOGGER.debug(VEHICLE_PROFILE_FOUND_FOR_DEVICE_ID_PROFILE, CommonUtils.maskContent(deviceId),
-                    vehicleProfile);
-            try {
-                if (vehicleProfile.getEcus() != null && vehicleProfile.getEcus().size() == 1) {
-                    LOGGER.debug("Vehicle profile delete starts");
-                    return dao.delete(vehicleProfile);
-                } else {
-                    LOGGER.debug("Vehicle profile delete for deviceId: {}", deviceId);
-                    for (Map.Entry<String, ? extends Ecu> set : vehicleProfile.getEcus().entrySet()) {
-                        if (null != set.getValue().getClientId()
-                                && deviceId.equalsIgnoreCase(set.getValue().getClientId())) {
-                            vehicleProfile.getEcus().remove(set.getKey());
-                            LOGGER.debug("Vehicle profile removed ecu: {}", set.getKey());
-                            return dao.update(vehicleProfile);
-                        }
-                    }
-                }
-            } catch (Exception e) {
-                LOGGER.error("Vehicle profile deletion failed for clientId {}", deviceId);
-            }
-        } else {
+        if (vehicleProfileList == null || vehicleProfileList.isEmpty() || vehicleProfileList.get(0) == null) {
             LOGGER.error("Vehicle profile not found for clientId {}", deviceId);
+            return false;
+        }
+
+        VehicleProfile vehicleProfile = vehicleProfileList.get(0);
+        LOGGER.debug(VEHICLE_PROFILE_FOUND_FOR_DEVICE_ID_PROFILE, CommonUtils.maskContent(deviceId), vehicleProfile);
+
+        try {
+            Map<String, ? extends Ecu> ecus = vehicleProfile.getEcus();
+            if (ecus == null) {
+                LOGGER.error("ECUs not found for clientId {}", deviceId);
+                return false;
+            }
+
+            if (ecus.size() == 1) {
+                LOGGER.debug("Vehicle profile delete starts");
+                return dao.delete(vehicleProfile);
+            }
+
+            String ecuKeyToRemove = findEcuKeyByClientId(ecus, deviceId);
+            if (ecuKeyToRemove != null) {
+                ecus.remove(ecuKeyToRemove);
+                LOGGER.debug("Vehicle profile removed ecu: {}", ecuKeyToRemove);
+                return dao.update(vehicleProfile);
+            }
+        } catch (Exception e) {
+            LOGGER.error("Vehicle profile deletion failed for clientId {}", deviceId, e);
         }
         return false;
+    }
+
+    private String findEcuKeyByClientId(Map<String, ? extends Ecu> ecus, String clientId) {
+        for (Map.Entry<String, ? extends Ecu> entry : ecus.entrySet()) {
+            Ecu ecu = entry.getValue();
+            if (ecu != null && clientId.equalsIgnoreCase(ecu.getClientId())) {
+                return entry.getKey();
+            }
+        }
+        return null;
     }
 
     /**

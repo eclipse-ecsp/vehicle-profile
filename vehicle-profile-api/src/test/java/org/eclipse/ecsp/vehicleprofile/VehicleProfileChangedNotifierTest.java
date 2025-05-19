@@ -244,11 +244,6 @@ public class VehicleProfileChangedNotifierTest {
         assertEquals(oldVp.getEcus().get("hu").getSwVersion(), changeDescriptions.get(0).getOld());
     }
 
-    // @Test
-    public void testVehicleCreated() throws JsonProcessingException {
-
-    }
-
     @Test
     public void testServiceProvisioningAdded() throws JsonProcessingException {
         VehicleProfile oldVp = VehicleProfileTestUtil.generateVehicleProfile();

@@ -20,9 +20,6 @@
 
 package org.eclipse.ecsp.vehicleprofile.service;
 
-
-import org.eclipse.ecsp.utils.logger.IgniteLogger;
-import org.eclipse.ecsp.utils.logger.IgniteLoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -45,8 +42,6 @@ import java.util.Base64;
  */
 @Service
 public class EncryptSensitiveDataService {
-
-    private static final IgniteLogger LOGGER = IgniteLoggerFactory.getLogger(EncryptSensitiveDataService.class);
 
     public static final int GENERATE_KEY_LENGTH = 128;
     public static final int GENERATE_IV_LENGTH = 16;
