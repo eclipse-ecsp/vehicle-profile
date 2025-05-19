@@ -37,6 +37,7 @@ import org.eclipse.ecsp.vehicleprofile.domain.PageResponse;
 import org.eclipse.ecsp.vehicleprofile.domain.TermsAndConditions;
 import org.eclipse.ecsp.vehicleprofile.domain.User;
 import org.eclipse.ecsp.vehicleprofile.domain.VehicleProfile;
+import org.eclipse.ecsp.vehicleprofile.domain.VehicleProfileEcuFilterRequest;
 import org.eclipse.ecsp.vehicleprofile.domain.VehicleProfileFilterRequest;
 import org.eclipse.ecsp.vehicleprofile.exception.BadRequestException;
 import org.eclipse.ecsp.vehicleprofile.exception.NotFoundException;
@@ -77,6 +78,7 @@ import java.util.Map.Entry;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeFalse;
 
@@ -626,7 +628,55 @@ public class VehicleManagerTest {
         // Assert
         assertFalse(result);
     }
+    @Test
+    public void testGetEcuByClientIdReturnsCorrectEcu() {
+        // Arrange
+        VehicleProfile vehicleProfile = VehicleProfileTestUtil.generateVehicleProfile();
+        String clientId = vehicleProfile.getEcus().values().iterator().next().getClientId();
+        vehicleMgr.createVehicle(vehicleProfile);
 
+        // Act
+        VehicleProfileEcuFilterRequest result = vehicleMgr.getEcuByClientId(clientId);
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(vehicleProfile.getVehicleId(), result.getVehicleId());
+        assertNotNull(result.getEcus());
+        assertTrue(result.getEcus().values().stream().anyMatch(ecu -> clientId.equals(ecu.getClientId())));
+    }
+
+    @Test
+    public void testGetEcuByClientIdReturnsNullWhenNotFound() {
+        // Act
+        VehicleProfileEcuFilterRequest result = vehicleMgr.getEcuByClientId("NON_EXISTENT_CLIENT_ID");
+
+        // Assert
+        assertNull(result);
+    }
+
+    @Test
+    public void testGetEcuByClientIdWithMultipleEcus() {
+        // Arrange
+        VehicleProfile vehicleProfile = VehicleProfileTestUtil.generateVehicleProfile();
+        Map<String, Ecu> ecus = new HashMap<>(vehicleProfile.getEcus());
+        Ecu extraEcu = new Ecu();
+        extraEcu.setClientId("EXTRA_CLIENT_ID");
+        extraEcu.setSerialNo("EXTRA_SERIAL");
+        extraEcu.setEcuType("EXTRA_TYPE");
+        ecus.put("extraEcu", extraEcu);
+        vehicleProfile.setEcus(ecus);
+        vehicleMgr.createVehicle(vehicleProfile);
+
+        // Act
+        VehicleProfileEcuFilterRequest result = vehicleMgr.getEcuByClientId("EXTRA_CLIENT_ID");
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(vehicleProfile.getVehicleId(), result.getVehicleId());
+        assertEquals("extraEcu", result.getDeviceType());
+        assertTrue(result.getEcus().containsKey("extraEcu"));
+        assertEquals("EXTRA_CLIENT_ID", result.getEcus().get("extraEcu").getClientId());
+    }
     private void insertDummyCodeValue() {
         CodeValue codeValue = new CodeValue();
         codeValue.setCode("T32");
