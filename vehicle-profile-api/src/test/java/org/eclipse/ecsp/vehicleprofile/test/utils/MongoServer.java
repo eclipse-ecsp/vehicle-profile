@@ -91,7 +91,7 @@ public class MongoServer extends ExternalResource {
 
     private void startMongoServer() throws UnknownHostException, IOException, InterruptedException {
         mongodStarter = MongodStarter.getDefaultInstance();
-        MongodConfig mongodConfig = MongodConfig.builder().version(Version.Main.V4_4)
+        MongodConfig mongodConfig = MongodConfig.builder().version(Version.Main.V5_0)
                 .net(new Net("localhost", MONGO_PORT, Network.localhostIsIPv6())).build();
         mongodExecutable = mongodStarter.prepare(mongodConfig);
         mongodProcess = mongodExecutable.start();

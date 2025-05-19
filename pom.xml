@@ -86,7 +86,7 @@
 		<hibernate-validator.version>8.0.2.Final</hibernate-validator.version>
 		<commons-compress.version>1.27.1</commons-compress.version>
 		<netty.version>4.1.119.Final</netty.version>
-		<emebed.mongo.version>4.13.0</emebed.mongo.version>
+		<emebed.mongo.version>3.4.11</emebed.mongo.version>
 		<embedded-redis.version>0.6</embedded-redis.version>
 		<zookeeper.version>3.8.4</zookeeper.version>
 		<kafka.version>3.7.2</kafka.version>
