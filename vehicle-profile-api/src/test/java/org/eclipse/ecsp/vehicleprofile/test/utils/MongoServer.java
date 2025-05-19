@@ -20,28 +20,18 @@
 
 package org.eclipse.ecsp.vehicleprofile.test.utils;
 
-import com.mongodb.BasicDBObject;
-import com.mongodb.MongoClient;
-import com.mongodb.ServerAddress;
-import com.mongodb.client.MongoDatabase;
-import de.flapdoodle.embed.mongo.MongodExecutable;
-import de.flapdoodle.embed.mongo.MongodProcess;
-import de.flapdoodle.embed.mongo.MongodStarter;
-import de.flapdoodle.embed.mongo.config.MongodConfig;
-import de.flapdoodle.embed.mongo.config.Net;
-import de.flapdoodle.embed.mongo.distribution.Version;
-import de.flapdoodle.embed.process.runtime.Network;
-import org.junit.rules.ExternalResource;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.RandomAccessFile;
-import java.net.UnknownHostException;
-import java.nio.channels.FileChannel;
-import java.nio.channels.FileLock;
 import java.util.Map;
 
-import static org.junit.Assert.assertNotNull;
+import org.bson.conversions.Bson;
+import org.eclipse.ecsp.nosqldao.spring.config.AbstractIgniteDAOMongoConfig;
+import org.junit.rules.ExternalResource;
+import org.testcontainers.containers.MongoDBContainer;
+import org.testcontainers.junit.jupiter.Container;
+
+import com.mongodb.BasicDBObject;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
+import com.mongodb.client.MongoDatabase;
 
 /**
  * MongoServer.
@@ -49,7 +39,7 @@ import static org.junit.Assert.assertNotNull;
 public class MongoServer extends ExternalResource {
     private static final org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(MongoServer.class);
 
-    private MongodStarter mongodStarter;
+    /*private MongodStarter mongodStarter;
     private MongodExecutable mongodExecutable;
     private MongodProcess mongodProcess;
 
@@ -91,7 +81,7 @@ public class MongoServer extends ExternalResource {
 
     private void startMongoServer() throws UnknownHostException, IOException, InterruptedException {
         mongodStarter = MongodStarter.getDefaultInstance();
-        MongodConfig mongodConfig = MongodConfig.builder()
+        MongodConfig mongodConfig = MongodConfig.builder().version(Version.Main.V6_0)
                 .net(new Net("localhost", MONGO_PORT, Network.localhostIsIPv6())).build();
         mongodExecutable = mongodStarter.prepare(mongodConfig);
         mongodProcess = mongodExecutable.start();
@@ -115,5 +105,41 @@ public class MongoServer extends ExternalResource {
         if (null != mongodExecutable) {
             mongodExecutable.stop();
         }
+    }*/
+    
+    @Container
+    MongoDBContainer mongoDbContainer = new MongoDBContainer("mongo:6.0.13");
+    
+    protected void before() throws Throwable {
+      this.mongoDbContainer.start();
+      LOGGER.info("Embedded mongo DB started on address {} ", new Object[] { this.mongoDbContainer.getHost() });
+      AbstractIgniteDAOMongoConfig.overridingPort = this.mongoDbContainer.getFirstMappedPort();
+      LOGGER.info("MongoClient connecting for pre-work DB configuration...");
+      MongoClient mongoClient = MongoClients.create(this.mongoDbContainer.getConnectionString());
+      try {
+        BasicDBObject basicDBObject = new BasicDBObject();
+        basicDBObject.put("createUser", "admin");
+        basicDBObject.put("pwd", "dummyPass");
+        String[] roles = { "readWrite" };
+        basicDBObject.put("roles", roles);
+        MongoDatabase adminDatabase = mongoClient.getDatabase("admin");
+        BasicDBObject command = new BasicDBObject((Map)basicDBObject);
+        adminDatabase.runCommand((Bson)command);
+        if (mongoClient != null)
+          mongoClient.close(); 
+      } catch (Throwable throwable) {
+        if (mongoClient != null)
+          try {
+            mongoClient.close();
+          } catch (Throwable throwable1) {
+            throwable.addSuppressed(throwable1);
+          }  
+        throw throwable;
+      } 
+    }
+    
+    protected void after() {
+      if (this.mongoDbContainer.isCreated())
+        this.mongoDbContainer.stop(); 
     }
 }
