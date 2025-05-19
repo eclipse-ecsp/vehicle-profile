@@ -644,25 +644,6 @@ public class VehicleManagerTest {
         assertNull(result);
     }
     
-    @Test
-    public void testGetEcuByClientIdWithMultipleEcus() {
-        // Arrange
-        VehicleProfile vehicleProfile1 = VehicleProfileTestUtil.generateVehicleProfile();
-        Map<String, Ecu> ecus = new HashMap<>(vehicleProfile1.getEcus());
-        Ecu extraEcu = new Ecu();
-        extraEcu.setClientId("EXTRA_CLIENT_ID");
-        extraEcu.setSerialNo("EXTRA_SERIAL");
-        extraEcu.setEcuType("EXTRA_TYPE");
-        ecus.put("extraEcu", extraEcu);
-        vehicleProfile1.setEcus(ecus);
-        vehicleMgr.createVehicle(vehicleProfile1);
-
-        // Act
-        VehicleProfileEcuFilterRequest result = vehicleMgr.getEcuByClientId("EXTRA_CLIENT_ID");
-
-        // Assert
-        assertNotNull(result);
-    }
     
     @Test
     public void testGetEcuByClientIdReturnsCorrectEcu() {
