@@ -34,7 +34,7 @@
 		<maven.shade.version>2.1</maven.shade.version>
 		<common.lang.version>2.6</common.lang.version>
 		<junit.version>4.13.1</junit.version>
-		<moquette-broker.version>0.10</moquette-broker.version>
+		<moquette-broker.version>0.17</moquette-broker.version>
 		<rocksdbjni.version>6.22.1</rocksdbjni.version>
 		<hazelcast.version>5.5.0</hazelcast.version>
 		<spring.boot.starter.parent>3.4.4</spring.boot.starter.parent>

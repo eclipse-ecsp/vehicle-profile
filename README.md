@@ -1,8 +1,10 @@
 [<img src="./images/logo.png" width="300" height="150"/>](logo.png)
 
-[![Build](../../actions/workflows/maven-build.yml/badge.svg)](../../actions/workflows/maven-build.yml)
-[![License Compliance](../../actions/workflows/license-compliance.yml/badge.svg)](../../actions/workflows/license-compliance.yml)
-[![Documentation](../../actions/workflows/documentation.yml/badge.svg)](../../actions/workflows/documentation.yml)
+[![Maven Build & Sonar Analysis](https://github.com/eclipse-ecsp/vehicle-profile/actions/workflows/maven-build.yml/badge.svg)](https://github.com/eclipse-ecsp/vehicle-profile/actions/workflows/maven-build.yml)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=eclipse-ecsp_vehicle-profile&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=eclipse-ecsp_vehicle-profile)
+[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=eclipse-ecsp_vehicle-profile&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=eclipse-ecsp_vehicle-profile)
+[![License Compliance](https://github.com/eclipse-ecsp/vehicle-profile/actions/workflows/licence-compliance.yaml/badge.svg)](https://github.com/eclipse-ecsp/vehicle-profile/actions/workflows/licence-compliance.yaml)
+[![Latest Release](https://img.shields.io/github/v/release/eclipse-ecsp/vehicle-profile?sort=semver)](https://github.com/eclipse-ecsp/vehicle-profile/releases)
 
 # Vehicle Profile
 
