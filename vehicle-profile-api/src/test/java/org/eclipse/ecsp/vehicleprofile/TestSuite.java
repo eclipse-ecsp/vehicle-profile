@@ -20,7 +20,7 @@
 
 package org.eclipse.ecsp.vehicleprofile;
 
-import org.eclipse.ecsp.vehicleprofile.test.utils.MongoServer;
+import org.eclipse.ecsp.dao.utils.EmbeddedMongoDB;
 import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -35,7 +35,7 @@ import org.springframework.test.context.TestPropertySource;
 @SuiteClasses({  VehicleManagerTest.class, VehicleDaoDefaultOemTest.class, UserV2Test.class })
 public class TestSuite {
     @ClassRule
-    public static MongoServer MongoServer = new MongoServer();
+    public static final EmbeddedMongoDB MONGO_SERVER = new EmbeddedMongoDB();
     
     private TestSuite() {}
 
