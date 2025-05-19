@@ -60,7 +60,7 @@
 		<maven.compiler.version>3.8.0</maven.compiler.version>
 		<maven.release.plugin.version>2.5.3</maven.release.plugin.version>
 		<maven-surefire-plugin.version>2.18.1</maven-surefire-plugin.version>
-		<sonar-maven-plugin.version>3.10.0.2493</sonar-maven-plugin.version>
+		<sonar-maven-plugin.version>5.1.0.4751</sonar-maven-plugin.version>
 		<jacoco-maven-plugin.version>0.8.10</jacoco-maven-plugin.version>
 		<maven-javadoc-plugin.version>3.2.0</maven-javadoc-plugin.version>
 		<puppycrawl.checkstyle-version>10.13.0</puppycrawl.checkstyle-version>
