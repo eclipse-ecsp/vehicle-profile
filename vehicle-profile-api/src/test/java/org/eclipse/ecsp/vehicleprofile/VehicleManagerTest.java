@@ -810,11 +810,6 @@ public class VehicleManagerTest {
         // Arrange
         VehicleProfile mockedVehicleProfile = objectMapper.readValue(new URL("classpath:vehicle-profileV3.json"), 
                 VehicleProfile.class);
-        Ecu ecu = new Ecu();
-        ecu.setClientId("4100ec30e42ac110");
-        Map<String, Ecu> ecus = new HashMap<>();
-        ecus.put("hu", ecu);
-        mockedVehicleProfile.setEcus(ecus);
         String vehicleId = vehicleMgr.createVehicle(mockedVehicleProfile);
 
         // Act
