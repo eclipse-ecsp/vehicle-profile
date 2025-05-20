@@ -822,6 +822,5 @@ public class VehicleManagerTest {
 
         // Assert
         assertTrue(result);
-        vehicleMgr.delete(vehicleId);
     }
 }

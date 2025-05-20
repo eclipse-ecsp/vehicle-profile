@@ -53,23 +53,6 @@ Download and Install Apache Maven 3.8 locally and follow the below steps for Int
 
 * Link of the database and table scripts to be installed : 
 
-3. Add the below Json in separate files in the Vault(a component to store tokens and keys):
-
-
-```
-{
-  "vehicle-profile-sp": {
-    "mqtt_user_password": "ops-manual"
-  }
-}
-```
-```
-{
-  "vehicle-profile-api": {
-    "vehicle_specification_client_id": "ops-manual",
-    "vehicle_specification_client_secret": "ops-manual"
-  }
-}
 ```
 mqtt_user_password : it is the password to connect with MQTT.
 
