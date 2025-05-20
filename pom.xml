@@ -22,6 +22,9 @@
 	<version>0.1.0</version>
 	<packaging>pom</packaging>
 	<name>vehicle-profile</name>
+	<description>Vehicle Profile library for ECSP project</description>
+	<url>https://github.com/eclipse-ecsp/vehicle-profile</url>
+	
 	<modules>
 		<module>vehicle-profile-entities</module>
 		<module>vehicle-profile-commons</module>
@@ -34,6 +37,14 @@
 		<url>https://github.com/eclipse-ecsp/vehicle-profile</url>
 		<tag>HEAD</tag>
 	</scm>
+	
+	<developers>
+		<developer>
+			<id>akshaymathur-harman</id>
+			<name>Akshay Mathur</name>
+			<email>akshay.mathur@harman.com</email>
+		</developer>
+	</developers>
 
 	<licenses>
 		<license>
