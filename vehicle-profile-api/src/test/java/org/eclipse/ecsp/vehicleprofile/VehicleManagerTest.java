@@ -54,6 +54,7 @@ import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -790,7 +791,7 @@ public class VehicleManagerTest {
     }
     
     @Test
-    public void testDeleteDeviceReturnsFalseWhenEcusIsNull() throws Exception{
+    public void testDeleteDeviceReturnsFalseWhenEcusIsNull() throws Exception {
         // Arrange
         VehicleProfile mockedVehicleProfile = objectMapper.readValue(new URL("classpath:vehicle-profileV2.json"), 
                 VehicleProfile.class);
@@ -806,7 +807,7 @@ public class VehicleManagerTest {
     }
     
     @Test
-    public void testDeleteDeviceDeletesVehicleProfileWhenSingleEcu() throws Exception{
+    public void testDeleteDeviceDeletesVehicleProfileWhenSingleEcu() throws Exception {
         // Arrange
         VehicleProfile mockedVehicleProfile = objectMapper.readValue(new URL("classpath:vehicle-profileV3.json"), 
                 VehicleProfile.class);
@@ -817,5 +818,10 @@ public class VehicleManagerTest {
 
         // Assert
         assertTrue(result);
+    }
+    
+    @Test(expected = NotFoundException.class)
+    public void testdDeleteVehicleProfileNotFount() {
+        vehicleMgr.deleteVehicleProfile(null);
     }
 }
