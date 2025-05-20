@@ -25,6 +25,7 @@ import org.eclipse.ecsp.entities.vin.CodeValue;
 import org.eclipse.ecsp.testutils.EmbeddedRedisServer;
 import org.eclipse.ecsp.vehicleprofile.commons.dao.CodeValueDao;
 import org.eclipse.ecsp.vehicleprofile.constants.Constants;
+import org.eclipse.ecsp.vehicleprofile.dao.VehicleDao;
 import org.eclipse.ecsp.vehicleprofile.domain.Count;
 import org.eclipse.ecsp.vehicleprofile.domain.Ecu;
 import org.eclipse.ecsp.vehicleprofile.domain.FilterDto;
@@ -53,6 +54,7 @@ import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -785,5 +787,41 @@ public class VehicleManagerTest {
         codeValue.setCode("WD23");
         codeValue.setValue("TERRA");
         codeValueDao.save(codeValue);
+    }
+    
+    @Test
+    public void testDeleteDeviceReturnsFalseWhenEcusIsNull() throws Exception{
+        // Arrange
+        VehicleProfile mockedVehicleProfile = objectMapper.readValue(new URL("classpath:vehicle-profileV2.json"), 
+                VehicleProfile.class);
+        mockedVehicleProfile.setEcus(null);
+        String vehicleId = vehicleMgr.createVehicle(mockedVehicleProfile);
+
+        // Act
+        boolean result = vehicleMgr.terminateDevice(vehicleId);
+
+        // Assert
+        assertFalse(result);
+        vehicleMgr.delete(vehicleId);
+    }
+    
+    @Test
+    public void testDeleteDeviceDeletesVehicleProfileWhenSingleEcu() throws Exception{
+        // Arrange
+        VehicleProfile mockedVehicleProfile = objectMapper.readValue(new URL("classpath:vehicle-profileV3.json"), 
+                VehicleProfile.class);
+        Ecu ecu = new Ecu();
+        ecu.setClientId("4100ec30e42ac110");
+        Map<String, Ecu> ecus = new HashMap<>();
+        ecus.put("hu", ecu);
+        mockedVehicleProfile.setEcus(ecus);
+        String vehicleId = vehicleMgr.createVehicle(mockedVehicleProfile);
+
+        // Act
+        boolean result = vehicleMgr.terminateDevice(vehicleId);
+
+        // Assert
+        assertTrue(result);
+        vehicleMgr.delete(vehicleId);
     }
 }

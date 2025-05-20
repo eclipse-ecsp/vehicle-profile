@@ -1,0 +1,99 @@
+{
+	"schemaVersion": "1.0",
+	"vin": "BHU25CBWOSX4089",
+	"createdOn": "2018-08-08T15:48:37.883+0000",
+	"updatedOn": "2018-08-08T15:48:37.883+0000",
+	"productionDate": "2018-05-17T15:49:33.000+0000",
+	"soldRegion": "NorthAmerica",
+	"saleDate": "2018-07-17T20:17:13.711+0000",
+    "connectedPlatform": "TestPlatform",
+	"vehicleAttributes": {
+		"make": "Test",
+		"model": "Test",
+		"marketingColor": "DIAMOND BLACK CRYSTAL",
+		"baseColor": null,
+		"modelYear": "2019",
+		"destinationCountry": "US",
+		"engineType": "H",
+		"bodyStyle": "4-door SUV"
+	},
+	"authorizedUsers": [
+		{
+			"userId": "test",
+			"role": "VEHICLE_OWNER",
+			"createdOn": "2018-07-17T20:48:52.757+0000"
+		}
+	],
+	"modemInfo": {
+		"iccid": "8991101200003204510",
+		"imei": "35453",
+		"msisdn": "12484798092",
+		"imsi": "31015"
+	},
+	"vehicleArchType": "hu",
+	"ecus": {
+		"hu": {
+			"swVersion": "4.31",
+			"hwVersion": "1.54",
+			"partNumber": "187469231",
+			"os": "Android",
+			"screenSize": null,
+			"manufacturer": "Harman",
+			"ecuType": "VP4",
+			"serialNo": "ADXE12435",
+			"clientId": "4100ec30e42ac110",
+			"capabilities": {
+				"services": [
+					{
+						"applicationId": "IVA"
+					},
+					{
+						"applicationId": "SOS"
+					},
+					{
+						"applicationId": "AOTA"
+					}
+				]
+			},
+			"provisionedServices": {
+				"services": [
+					{
+						"applicationId": "LOCATION"
+					},
+					{
+						"applicationId": "TANF"
+					},
+					{
+						"applicationId": "ECALL"
+					},
+					{
+						"applicationId": "RO"
+					},
+					{
+						"applicationId": "SQDF"
+					},
+					{
+						"applicationId": "VFND"
+					},
+					{
+						"applicationId": "RSA"
+					},
+					{
+						"applicationId": "Navigation",
+						"version": "1.1.2"
+					},
+					{
+						"applicationId": "Navigation",
+						"version": "1.0.2"
+					},
+					{
+						"applicationId": "STOLEN-VEHICLE"
+					},
+					{
+						"applicationId": "BCALL"
+					}
+				]
+			}
+		}
+	}
+}

@@ -58,10 +58,10 @@ jobs:
       maven_args: 'clean package -P release'
   
   docker_push_vehicle_profile_sp:
-    needs: sonar_analysis
-    if: false
+    needs: extract_version
     uses: eclipse-ecsp/.github/.github/workflows/workflow-docker-push.yml@main
     secrets: inherit
     with:
       context_path: ./vehicle-profile-sp
+      image_tag: ${{ needs.extract_version.outputs.release_version }}
       maven_args: 'clean package -P release'
