@@ -2,13 +2,13 @@
   <img src="./images/logo.png" width="300" height="150"/>
 </div>
 
+# Vehicle Profile
+
 [![Maven Build & Sonar Analysis](https://github.com/eclipse-ecsp/vehicle-profile/actions/workflows/maven-build.yml/badge.svg)](https://github.com/eclipse-ecsp/vehicle-profile/actions/workflows/maven-build.yml)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=eclipse-ecsp_vehicle-profile&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=eclipse-ecsp_vehicle-profile)
 [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=eclipse-ecsp_vehicle-profile&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=eclipse-ecsp_vehicle-profile)
 [![License Compliance](https://github.com/eclipse-ecsp/vehicle-profile/actions/workflows/licence-compliance.yaml/badge.svg)](https://github.com/eclipse-ecsp/vehicle-profile/actions/workflows/licence-compliance.yaml)
 [![Latest Release](https://img.shields.io/github/v/release/eclipse-ecsp/vehicle-profile?sort=semver)](https://github.com/eclipse-ecsp/vehicle-profile/releases)
-
-# Vehicle Profile
 
 Vehicle-profile component is responsible to create and maintain profile of each vehicle that has been on-boarded to platform. Vehicle profile holds details specific to a vehicle and also details of device that's plugged into vehicle along with capabilities and services that's been provisioned for combination of vehicle and device. Vehicle profile are created and maintained in Mongo DB with the attributes like vehicleId, vin, ecus, authorizedUsers, vehicleArchType  etc.
 
@@ -43,7 +43,7 @@ from the command line interface.
 
 The list of tools required to build and run the project:
 * Java 17
-* Maven 3.8 or higher
+* Maven
 
 ### Installation
 
@@ -58,7 +58,9 @@ The list of tools required to build and run the project:
 
 Checkstyle plugin [maven-checkstyle-plugin:3.2.1](https://maven.apache.org/plugins/maven-checkstyle-plugin/) is integrated in [pom.xml](./pom.xml) which runs in the validate phase and check goal of the maven lifecycle and fails the build if there are any checkstyle errors in the project.
 
-To run checkstyle plugin explicitly, run the following command: mvn checkstyle:check
+To run checkstyle plugin explicitly, run the following command:
+
+```mvn checkstyle:check```
 
 ### Running the tests
 
@@ -76,11 +78,8 @@ To run a method from within a test
 
 ### Deployment
 
-The component can be deployed as a Kubernetes pod by installing Device factory management charts.
+The component can be deployed as a Kubernetes pod by installing Vehicle Profile charts.
 Link: [Charts](../../../ecsp-helm-charts/tree/main/vehicle-profile)
-
-Postgres DB needs to be installed and ignite database/schema should be created with the required tables.
-Link of the database and table scripts to be installed: [dmpostgres.sql](https://github.com/eclipse-ecsp/ecsp-helm-charts/blob/main/postgresql/db-scripts/dmpostgres.sql)
 
 ## Architecture
 
@@ -90,7 +89,7 @@ Sequence diagram of Vehicle Profile:
 
 Vehicle Profile component will be responsible for the below features,
 
-1. VIN Event Processing : The HCP component / dongle will generate VIN events which will provide details about the Device Id and connected Vehicle. This will be processed by the Ignite Platform Vehicle Profile SP component.
+1. VIN Event Processing : The CSP component / dongle will generate VIN events which will provide details about the Device Id and connected Vehicle. This will be processed by the Ignite Platform Vehicle Profile SP component.
 
 2. Vehicle Profile APIs : Set of RESTFul API are exposed which can be used to query the Vehicle Profile associated with different vehicles present in the system. It also provides certain APIs which can be used to modify the vehicle attributes as part of VIN processing.
 
@@ -104,17 +103,17 @@ Vehicle Profile component will be responsible for the below features,
 
 ## Built With Dependencies
 
-* [Spring](https://spring.io/projects/spring-framework) - Web framework used for building the application.
-* [Maven](https://maven.apache.org/) - Build tool used for dependency management.
+* [Spring](https://spring.io/projects/spring-framework) - Web framework used for building the application
+* [Maven](https://maven.apache.org/) - Build tool used for dependency management
 * [MongoDB](https://www.mongodb.com/) - NoSQL document database
-* [Project Lombok](https://projectlombok.org/) - Auto-generates Java boilerplate code (e.g., getters, setters, builders).
+* [Project Lombok](https://projectlombok.org/) - Auto-generates Java boilerplate code (e.g., getters, setters, builders)
 * [Apache Common](https://commons.apache.org/proper/commons-lang/) - Java Library
 * [Jackson](https://github.com/FasterXML) - Reading JSON Objects
-* [Morphia](https://morphia.dev/landing/index.html) - A Java tool for mapping Java objects to MongoDB documents.
-* [Logback](https://logback.qos.ch/) - Concrete logging implementation used with SLF4J.
-* [slf4j](https://www.slf4j.org/) - Logging facade providing abstraction for various logging frameworks.
-* [Mockito](https://site.mockito.org/) - Mocking framework for testing.
-* [JUnit](https://junit.org/) - Unit testing framework.
+* [Morphia](https://morphia.dev/landing/index.html) - A Java tool for mapping Java objects to MongoDB documents
+* [Logback](https://logback.qos.ch/) - Concrete logging implementation used with SLF4J
+* [slf4j](https://www.slf4j.org/) - Logging facade providing abstraction for various logging frameworks
+* [Mockito](https://site.mockito.org/) - Mocking framework for testing
+* [JUnit](https://junit.org/) - Unit testing framework
 
 ## How to contribute
 
