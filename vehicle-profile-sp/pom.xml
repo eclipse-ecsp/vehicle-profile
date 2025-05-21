@@ -38,6 +38,7 @@
 		<rocksdbjni.version>6.22.1</rocksdbjni.version>
 		<hazelcast.version>5.5.0</hazelcast.version>
 		<spring.boot.starter.parent>3.4.4</spring.boot.starter.parent>
+		<logback-gelf.version>6.1.1</logback-gelf.version>
 		<java.17.options>
             --add-opens=java.base/java.io=ALL-UNNAMED
             --add-opens=java.base/java.lang=ALL-UNNAMED
@@ -592,6 +593,11 @@
 		    <version>${junit-vintage-engine.version}</version>
 		    <scope>test</scope>
 		</dependency>
+		<dependency>
+            <groupId>de.siegmar</groupId>
+            <artifactId>logback-gelf</artifactId>
+            <version>${logback-gelf.version}</version>
+        </dependency>
 	</dependencies>
 	<build>
 		<finalName>vehicle-profile-sp</finalName>
