@@ -42,15 +42,17 @@ from the command line interface.
 ### Prerequisites
 
 The list of tools required to build and run the project:
-* Java 17
-* Maven
+   - Java 17
+   - Maven
+   - Container environment
 
 ### Installation
 
-[Install Java 17](https://www.azul.com/downloads/?version=java-17-lts&package=jdk#zulu)
+- [Install Java 17](https://www.azul.com/downloads/?version=java-17-lts&package=jdk#zulu)
 
-[How to set up Maven](https://maven.apache.org/install.html)
+- [How to set up Maven](https://maven.apache.org/install.html)
 
+- Install Docker on your machine by referring to official Docker documnentation to have a Container environment.
 
 ### Coding style check configuration
 
