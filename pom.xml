@@ -19,7 +19,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.eclipse.ecsp.vehicle-profile</groupId>
 	<artifactId>vehicle-profile</artifactId>
-	<version>0.1.0</version>
+	<version>1.0.0</version>
 	<packaging>pom</packaging>
 	<name>vehicle-profile</name>
 	<description>Vehicle Profile library for ECSP project</description>

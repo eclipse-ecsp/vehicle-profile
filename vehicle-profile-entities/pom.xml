@@ -23,7 +23,7 @@
 	<parent>
 		<groupId>org.eclipse.ecsp.vehicle-profile</groupId>
 		<artifactId>vehicle-profile</artifactId>
-		<version>0.1.0</version>
+		<version>1.0.0</version>
 	</parent>
 	<artifactId>vehicle-profile-entities</artifactId>
 	<name>vehicle-profile-entities</name>
