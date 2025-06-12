@@ -23,11 +23,13 @@
 	<parent>
 		<groupId>org.eclipse.ecsp.vehicle-profile</groupId>
 		<artifactId>vehicle-profile</artifactId>
-		<version>1.0.0</version>
+		<version>1.0.1</version>
 	</parent>
 	<artifactId>vehicle-profile-entities</artifactId>
 	<name>vehicle-profile-entities</name>
-
+	<description>Vehicle Profile library for ECSP project</description>
+	<url>https://github.com/eclipse-ecsp/vehicle-profile</url>
+	
 	<properties>
 		<packaging.type>jar</packaging.type>
 	</properties>
