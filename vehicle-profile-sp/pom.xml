@@ -37,7 +37,6 @@
 		<junit.version>4.13.1</junit.version>
 		<moquette-broker.version>0.17</moquette-broker.version>
 		<rocksdbjni.version>6.22.1</rocksdbjni.version>
-		<hazelcast.version>5.5.0</hazelcast.version>
 		<spring.boot.starter.parent>3.4.4</spring.boot.starter.parent>
 		<logback-gelf.version>6.1.1</logback-gelf.version>
 		<java.17.options>
@@ -453,11 +452,6 @@
 			<groupId>org.hibernate.validator</groupId>
 			<artifactId>hibernate-validator</artifactId>
 			<version>${hibernate-validator.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.hazelcast</groupId>
-			<artifactId>hazelcast</artifactId>
-			<version>${hazelcast.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>io.netty</groupId>
